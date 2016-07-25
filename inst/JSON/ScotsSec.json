@@ -1,0 +1,135 @@
+{
+  "BLAS": "openblas",
+  "CPU": "Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz",
+  "models": [
+    {
+      "formula": "Y ~ 1 + A + U + V + (1 | G) + (1 | H)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0710000000001401,
+          "feval": 39,
+          "func": "lmer",
+          "dev": 14773.2214911605
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.105000000000018,
+          "feval": 96,
+          "func": "lmer",
+          "dev": 14773.2214911727
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.06899999999996,
+          "feval": 31,
+          "func": "lmer",
+          "dev": 14773.2214934107
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0940000000000509,
+          "feval": 76,
+          "func": "lmer",
+          "dev": 14773.2215050385
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0909999999998945,
+          "feval": 66,
+          "func": "lmer",
+          "dev": 14773.2214915928
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.105000000000018,
+          "feval": 97,
+          "func": "lmer",
+          "dev": 14773.2214911681
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.203999999999951,
+          "feval": 22,
+          "func": "lmer",
+          "dev": 14773.2214912053
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.204999999999927,
+          "feval": 56,
+          "func": "lmer",
+          "dev": 14773.2214911621
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.299999999999955,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 14773.2214911605
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.19600000000014,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 14773.2214911605
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.009448073,
+
+          "feval": 43,
+          "func": "lmm",
+          "dev": 14773.221491160484
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.0119217,
+
+          "feval": 97,
+          "func": "lmm",
+          "dev": 14773.221491161665
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.010650833,
+
+          "feval": 68,
+          "func": "lmm",
+          "dev": 14773.261636264384
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.020100201,
+
+          "feval": 115,
+          "func": "lmm",
+          "dev": 14773.221491167742
+        },
+        {
+          "optimizer": "LN_PRAXIS",
+          "time": 0.017671961,
+
+          "feval": 112,
+          "func": "lmm",
+          "dev": 14773.221491160468
+        }
+      ],
+      "q": [
+        148,
+        19
+      ],
+      "nopt": 2,
+      "p": 4
+    }
+  ],
+  "memory": "15.561 GB",
+  "CPU_CORES": 4,
+  "WORD_SIZE": 64,
+  "Julia": "0.4.2",
+  "Rversion": "R version 3.2.2 (2015-08-14)",
+  "dsname": "ScotsSec",
+  "OS": "Linux",
+  "n": 3435
+}

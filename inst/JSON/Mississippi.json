@@ -1,0 +1,127 @@
+{
+  "BLAS": "openblas",
+  "CPU": "Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz",
+  "models": [
+    {
+      "formula": "Y ~ 1 + A + (1 | G)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0199999999999818,
+          "feval": 19,
+          "func": "lmer",
+          "dev": 246.573613971564
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.0179999999999723,
+          "feval": 12,
+          "func": "lmer",
+          "dev": 246.616337238262
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.0190000000000055,
+          "feval": 10,
+          "func": "lmer",
+          "dev": 246.573613971569
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0219999999999914,
+          "feval": 12,
+          "func": "lmer",
+          "dev": 246.573635368377
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0199999999999818,
+          "feval": 27,
+          "func": "lmer",
+          "dev": 246.573614584242
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.0200000000000387,
+          "feval": 40,
+          "func": "lmer",
+          "dev": 246.573613985621
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.114000000000033,
+          "feval": 14,
+          "func": "lmer",
+          "dev": 246.573613971565
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.111999999999966,
+          "feval": 15,
+          "func": "lmer",
+          "dev": 246.573613971565
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.397999999999968,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 247.508327657932
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.113,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 246.573613971564
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.000532059,
+
+          "feval": 14,
+          "func": "lmm",
+          "dev": 246.57361397156447
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.000812804,
+
+          "feval": 28,
+          "func": "lmm",
+          "dev": 246.57361397214441
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.000558649,
+
+          "feval": 33,
+          "func": "lmm",
+          "dev": 246.57361398012455
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.000656319,
+
+          "feval": 53,
+          "func": "lmm",
+          "dev": 246.57361397156512
+        }
+      ],
+      "q": [
+        6
+      ],
+      "nopt": 1,
+      "p": 3,
+      "mtype": "PLSOne"
+    }
+  ],
+  "memory": "15.561 GB",
+  "CPU_CORES": 4,
+  "WORD_SIZE": 64,
+  "Julia": "0.4.2",
+  "Rversion": "R version 3.2.2 (2015-08-14)",
+  "dsname": "Mississippi",
+  "OS": "Linux",
+  "n": 37
+}

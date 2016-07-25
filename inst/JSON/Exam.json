@@ -1,0 +1,252 @@
+{
+  "BLAS": "openblas",
+  "CPU": "Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz",
+  "models": [
+    {
+      "formula": "Y ~ 1 + A + B + U + (1 | G)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0429999999999993,
+          "feval": 16,
+          "func": "lmer",
+          "dev": 9325.4273050669
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.0529999999999973,
+          "feval": 30,
+          "func": "lmer",
+          "dev": 9325.42730506741
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.0480000000000018,
+          "feval": 17,
+          "func": "lmer",
+          "dev": 9325.42730506741
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0489999999999995,
+          "feval": 20,
+          "func": "lmer",
+          "dev": 9325.42730589452
+        },
+        {
+          "optimizer": "NLOPT_LN_PRAXIS",
+          "time": 60.287,
+          "feval": 100000,
+          "func": "lmer",
+          "dev": 9325.4273050669
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0539999999999878,
+          "feval": 28,
+          "func": "lmer",
+          "dev": 9325.42730507045
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.0619999999999976,
+          "feval": 39,
+          "func": "lmer",
+          "dev": 9325.42730507045
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.146000000000001,
+          "feval": 16,
+          "func": "lmer",
+          "dev": 9325.42730507095
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.144000000000005,
+          "feval": 15,
+          "func": "lmer",
+          "dev": 9325.42730506691
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.230000000000004,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 9325.4273050669
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.144999999999996,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 9325.4273050669
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.005394374,
+
+          "feval": 20,
+          "func": "lmm",
+          "dev": 9325.4273050669
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.005752602,
+
+          "feval": 32,
+          "func": "lmm",
+          "dev": 9325.42730506727
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.005448566,
+
+          "feval": 38,
+          "func": "lmm",
+          "dev": 9325.427305072133
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.005728712,
+
+          "feval": 59,
+          "func": "lmm",
+          "dev": 9325.427305072133
+        }
+      ],
+      "q": [
+        65
+      ],
+      "nopt": 1,
+      "p": 5
+    },
+    {
+      "formula": "Y ~ 1 + A * U + B + (1 | G)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0450000000000017,
+          "feval": 16,
+          "func": "lmer",
+          "dev": 9325.38460889901
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.0559999999999974,
+          "feval": 30,
+          "func": "lmer",
+          "dev": 9325.38460891195
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.0509999999999877,
+          "feval": 17,
+          "func": "lmer",
+          "dev": 9325.38460889954
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0550000000000068,
+          "feval": 23,
+          "func": "lmer",
+          "dev": 9325.38460889985
+        },
+        {
+          "optimizer": "NLOPT_LN_PRAXIS",
+          "time": 64.61,
+          "feval": 100000,
+          "func": "lmer",
+          "dev": 9325.38460889899
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0550000000000068,
+          "feval": 26,
+          "func": "lmer",
+          "dev": 9325.38460967164
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.063999999999993,
+          "feval": 39,
+          "func": "lmer",
+          "dev": 9325.38460892415
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.150000000000006,
+          "feval": 16,
+          "func": "lmer",
+          "dev": 9325.38460890306
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.143000000000001,
+          "feval": 15,
+          "func": "lmer",
+          "dev": 9325.38460889902
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.230000000000018,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 9325.384608899
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.14500000000001,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 9325.38460889901
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.005920895,
+
+          "feval": 20,
+          "func": "lmm",
+          "dev": 9325.38460889901
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.006154718,
+
+          "feval": 32,
+          "func": "lmm",
+          "dev": 9325.384608899432
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.006220627,
+
+          "feval": 40,
+          "func": "lmm",
+          "dev": 9325.38460890019
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.006468319,
+
+          "feval": 66,
+          "func": "lmm",
+          "dev": 9325.384608899016
+        }
+      ],
+      "q": [
+        65
+      ],
+      "nopt": 1,
+      "p": 6
+    }
+  ],
+  "memory": "15.561 GB",
+  "CPU_CORES": 4,
+  "WORD_SIZE": 64,
+  "Julia": "0.4.2",
+  "Rversion": "R version 3.2.0 (2015-04-16)",
+  "dsname": "Exam",
+  "OS": "Linux",
+  "n": 4059
+}

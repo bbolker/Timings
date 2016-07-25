@@ -1,0 +1,363 @@
+\documentclass[article]{jss}
+\usepackage{longtable}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{Douglas Bates\\University\ of Wisconsin-Madison \And 
+        Colin Longhurst \\University of Wisconsin-Madison}
+\title{Comparing Optimization Algorithms in the Fitting of Linear Mixed Models: Evaluating Speed and Accuracy using \pkg{lme4} in R and \pkg{lmm} in Julia}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Douglas Bates, Colin Longhurst} %% comma-separated
+\Plaintitle{Comparing Optimization Algorithms in the Fitting of Linear Mixed Models: Evaluating Speed and Accuracy using lme4 in R and lmm in Julia} %% without formatting
+\Shorttitle{\pkg{Timings}: A Package for the Evaluation of Optimization Algorithms} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{
+The \pkg{Timings} package allows for the comparison of several optimizers, in both \proglang{R} and \proglang{Julia}, used in the fitting of various linear mixed models. In \proglang{R} the optimizers are called by lmer from the \pkg{lme4} package (version 1.1-8). In \proglang{Julia} the optimizers are called by lmm from \pkg{MixedModels} package.  From the \pkg{Timings} package, conclusions regarding an optimizers relative speed, accuracy and general effectiveness of different optimizers paired with different types of models (ranging from simple to complex) can easily be drawn and interpretted.  \\
+  There are differences in the model formulations in \pkg{lme4} and in \pkg{MixedModels}. The numerical representation of the model in \pkg{lme4} and the method of evaluating the optimizers, described in this paper, is the same for all models. In \pkg{MixedModels} there are specialized representations for some model forms, such as models with a single grouping factor for the random effects. Some of the specialized representations allow for evaluation of the gradient of the objects, which can enhance convergence (but, interestingly, sometimes can impede convergence).
+}
+\Keywords{optimizers, mixed models, linear mixed models, lme4, lmm, \proglang{R}, \proglang{Julia}}
+\Plainkeywords{optimizers, mixed models, linear mixed models, lme4, lmm} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Douglas Bates\\
+  Emeritus Professor\\
+  Department of Statistics\\
+  University of Wisconsin-Madison\\
+  1300 University Ave
+  Madison, WI 53706-1685
+  U.S.A.\\
+  E-mail: \email{dmbates@stat.wisc.edu}\\
+  Github URL: \url{https://github.com/dmbates}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/512/507-7103
+%% Fax: +43/512/507-2851
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+
+<<echo=FALSE>>=
+load("~/Desktop/Summer_Sweave/Timings/data/res.rda")
+library(ggplot2)
+@
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+\section[Introduction]{Introduction}
+%% Note: If there is markup in \(sub)section, then it has to be escape as above.
+
+
+
+Mauris ac lectus sagittis, mollis diam porttitor, efficitur purus. Duis ut eros vitae dolor vulputate sagittis. Aenean viverra, dui in interdum consectetur, lectus elit placerat urna, dictum ultricies ex justo eget est. In at leo quam. Suspendisse eros nulla, gravida nec suscipit vel, egestas eget neque. Etiam pharetra, nisl nec viverra ultricies, mauris lectus facilisis velit, vel aliquam ipsum lorem ut sem. Nulla ornare, justo at tempus blandit, nulla urna porta ligula, id dictum mi est ac massa. Quisque at lacus neque. Pellentesque est nulla, dignissim eget lobortis ut, vehicula at erat. Aenean ornare lacus mattis, elementum elit vel, tempor risus. In in purus tempor lacus imperdiet rhoncus nec nec tortor. Duis sagittis nisl ante, id egestas neque tristique fermentum. Fusce aliquet, odio non auctor aliquet, purus orci venenatis purus, sit amet pulvinar nisi est at dolor. Pellentesque lobortis dui eros, et ultricies tellus ultrices at. Ut sit amet interdum justo. Integer placerat vehicula interdum. 
+
+
+\section[Methods]{Methods}
+
+
+To provide consistency we have copied all the data sets used in the
+timings to the \pkg{Timings} package itself. We have done all timings
+on the same computer. This computer has a relatively recent Intel
+processor and we used the
+\href{https://software.intel.com/en-us/intel-mkl}{Intel Math Kernel
+Library (MKL)} with \proglang{Julia}. We attempted to use
+\href{www.revolutionanalytics.com/revolution-r-open}{Revolution R Open
+(RRO)} as the \proglang{R} implementation as it can be configured with \pkg{MKL}.
+However, we ran into version problems with this so we used the standard
+Ubuntu version of \proglang{R} linked against OpenBLAS, which is also
+multi-threaded.
+
+Variables were renamed in the pattern: 
+
+\begin{itemize}
+\item \textbf{Y} the response 
+\item \textbf{A}, \textbf{B}, \dots{} categorical covariates 
+\item \textbf{G},\textbf{H}, \textbf{I}, \dots{} grouping factors for random effects 
+\item \textbf{U}, \textbf{V}, \dots{} (skipping \textbf{Y}) continuous covariates
+\end{itemize}
+
+
+The timing results are saved in \href{http://json.org}{JSON (JavaScript
+Object Notation)} files in the directory accessible as
+
+<<eval=FALSE>>=
+system.file("JSON",package="Timings")
+@
+
+within \pkg{R}. The directory name will end with
+\texttt{./Timings/inst/JSON/} in the package source directory, for
+example the result of cloning the
+\href{https://github.com/Stat990-033/Timings}{github repository}. There
+is one \texttt{.json} file for each data set. Each such file contains
+results on timings of one or more models.
+
+The \pkg{Timings} package for \proglang{R} provides a \texttt{retime}
+function that takes the name of one of these JSON files and, optionally,
+the name of a file with the updated timings. Similarly there are some
+source files for \pkg{Julia} retimings.
+
+<<eval=FALSE>>=
+include("../julia/retime.jl")
+retime("../JSON/Alfalfa.json","/tmp/Alfalfa.json")
+retime("../JSON/Alfalfa.json","/tmp/Alfalfa.json")
+@
+
+
+  The timing was repeated so that compilation time is not included in the
+results. This repetition is only needed once per session.
+
+A careful examination of these results shows that the main differences
+in the \pkg{Julia} timings (the \pkg{R} timings are merely reported, not evaluated)
+are that the \texttt{LN\_BOBYQA} and \texttt{LD\_MMA} optimizers are
+much faster in the second run. This is because much of the code needs to
+be compiled the first time that a derivative-free optimizer and a
+derivative-based optimizer are used.
+
+The names of the optimizers used with \texttt{lmm} are those from the
+\pkg{NLopt} package for \proglang{Julia}. Names that begin with \texttt{LD\_} are gradient-based
+methods. Names that begin with \texttt{LN\_} are derivative-free
+methods. There is one other derivative-free method, \texttt{LN\_PRAXIS},
+available in the \pkg{NLopt} package but, for some reason, it can
+hang on very simple problems like this. Frequently we omit it.
+
+The optimizers used with \texttt{lmer} include the \texttt{Nelder\_Mead}
+optimizer built into the \pkg{lme4} package, the \texttt{bobyqa}
+optimizer from the
+\pkg{minqa} package, the derivative-free optimizers from the
+\pkg{nloptr} package and several optimizers from the
+\pkg{optimx} pacakge.
+
+The \texttt{optimx:bobyqa} optimizer is just a wrapper around
+\texttt{bobyqa} (bounded optimization by quadratic approximation) from
+the \pkg{minqa} package and should provide results similar to those
+from the \texttt{bobyqa} optimizer. For some reason the number of
+function evaluations is not reported for the version in \pkg{optimx}.
+
+The optimizers from \pkg{nloptr} (i.e.~those whose names begin with
+\texttt{NLOPT\_LN\_}) use the same underlying code as do the similarly
+named optimizers in the \pkg{NLopt} package for \proglang{Julia}. The
+number of iterations to convergence should be similar for the same
+underlying code, although not nessarily exactly the same because the
+evaluation of the objective in \proglang{R} and in \proglang{Julia} may
+produce slightly different answers. Also the convergence criteria in the
+\proglang{Julia} version are more strict than those in the \proglang{R}
+version
+
+Also shown are the value of the criterion (negative twice the
+log-likelihood, lower is better) achieved, the elapsed time and the
+number of function and gradient evaluations. The \texttt{nopt} value is
+the number of parameters in the optimization problem. \texttt{mtype} is
+the model type in the \proglang{Julia} code. There are special methods for
+solving the penalized least squares (PLS) problem, and for evaluating
+the objective and its gradient when there is only one grouping factor
+for the random effects. The model type is called \texttt{PLSOne}.
+
+The \texttt{Alfalfa} example is a particularly easy one and all of the
+optimizerws converge to an objective value close to -10.81023 in less
+than 0.6 seconds.
+
+\section[Results]{Results}
+
+For the \texttt{Alfalfa} data there is not much of a burden in refitting
+the model with all the \textbf{Julia} optimizers just to get the table
+shown above. But other examples can take an hour or more to converge and
+we don't really need to refit them every time. The \texttt{tabulate.jl}
+file contains a function \texttt{optdir} to create a \texttt{DataFrame}
+from the results of all the model fits.
+
+<<eval=FALSE>>=
+include("../julia/tabulate.jl")
+res = optdir("../JSON");
+@
+
+<<echo=FALSE>>=
+library(xtable)
+@
+
+\begin
+{center}
+<<results=tex,echo=FALSE>>=
+print(xtable(subset(res, opt=="LD_CCSAQ")[1:8]), table.placement="!htp")
+@
+\end {center}
+
+
+The \texttt{time} column is the time in seconds to converge. The
+\texttt{reltime} column is the time relative to the \texttt{LN\_BOBYQA}
+optimizer in the \pkg{MixedModels} package for \proglang{Julia}.
+
+For \proglang{Julia} the time column is the time in seconds to converge. The reltime column is the time relative to the LN_BOBYQA optimizer in the \pkg{MixedModels} package for \proglang{Julia}.
+
+\begin
+{center}
+<<results=tex,echo=FALSE>>=
+print(xtable(subset(res, opt=="NLOPT_LN_BOBYQA")[1:8]), floating=FALSE, table.placement="H")
+@
+\end {center}
+
+
+
+\subsection[Convergence]{Proportion Converged}
+The most important question regarding the optimizers is whether or not they have converged to the global optimum. We cannot test this directly. Instead we use a "crowd-sourced" criterion based on the minimum objective achieved by any of the algorithms. The difference between the objective achieved by a particular algorithm and this minimum is called the excess. In the summaries \texttt{excess} is rounded to 5 digits after the decimal so the minimum non-zero \texttt{excess} is $10^{-5}$.
+
+\begin
+{center}
+<<results=tex,echo=FALSE>>=
+print(xtable(subset(res, opt=="LN_BOBYQA")[c(1,2,6)]),floating=FALSE, table.placement="H")
+@
+\end {center}
+
+  If we wish to declare ``converged'' or ``not converged'' according to
+the excess objective value we must establish a threshold. An absolute
+threshold seems reasonable because the objective, negative twice the
+log-likelihood, is on a scale where differences in this objective are
+compared to a $\chi^2$ random variable. Thus an excess of $10^{-9}$ or
+even $10^{-5}$ is negligible.
+
+For each optimizer we can examine which of the data set/model
+combinations resulted in an excess greater than a threshold.
+
+
+    At this threshold the most reliable algorithm in Julia is
+\texttt{LN\_BOBYQA}. In \proglang{R} the most reliable algorithms are
+\texttt{NLOPT\_LN\_BOBYQA}, \texttt{optimx:L-BFGS-B} and
+\texttt{optimx:nlminb}. It is interesting that nlminb is reliable as I
+felt that it wasn't converging well when it was the default optimizer in
+\pkg{lmer}.
+
+Interestingly, the derviative-based algorithms in \texttt{NLopt} were
+not as reliable as the derivative-free algorithms. The most likely
+explanation is that I don't have the gradient coded properly.
+
+The Nelder-Mead simplex algorithm did not perform well, failing on 8 out
+of 48 cases. For many of these the value at which convergence was
+declared was far from the optimum.
+
+<<results=tex>>=
+print(xtable(subset(res, opt=="Nelder_Mead" & excess > 0.005)[c(1,2,3,5,6,7,8)]),floating=FALSE, table.placement="H")
+@
+
+<<results=tex>>=
+print(xtable(subset(res, opt=="NLOPT_LN_NELDERMEAD" & excess > 0.005)[c(1,2,3,5,6,7,8)]),floating=FALSE, table.placement="H")
+@
+
+
+ The \texttt{Nelder\_Mead} algorithm, either in the native form in
+\pkg{lmer} or in the \texttt{NLopt} implementation performed poorly
+on those cases with many parameters to optimize. It was both unreliable
+and slow, taking over 45 minutes to reach a spurious optimum on the
+``maximal'' model (in the sense of Barr et al., 2012) for the
+\texttt{kb07} data from Kronmueller and Barr (2007). This is not
+terribly surprising given that the model is horribly overparameterized,
+but still it shows that this algorithm is not a good choice in these
+cases.
+
+We note in passing that all the models involving fitting 20 or more
+parameters are ``maximal'' models in the sense of Barr et al., 2012.
+Such models can present difficult optimization problems because they are
+severely overparameterized and inevitably converge on the boundary of
+the allowable parameter space. Whether or not it is sensible to compare
+results on such extreme cases is not clear.
+
+The \texttt{SBPLX} (subplex) algorithm, which is an enhancement of
+\texttt{Nelder\_Mead}, does better in these cases but is still rather
+slow.
+
+
+<<results=tex>>=
+print(xtable(subset(res, opt=="NLOPT_LN_SBPLX" & excess > 0.005)[c(1,2,3,5,6,7,8)]),floating=FALSE, table.placement="H")
+@
+
+  
+    By comparison, the \texttt{LN\_BOBYQA} algorithm converges quite rapidly
+on the \texttt{kb07} models.
+     
+        
+<<results=tex>>=
+print(xtable(subset(res, opt=="LN_BOBYQA" & dsname == "kb07")[c(1,2,5,6,7,9)]),floating=FALSE, table.placement="H")
+@
+
+\subsection[Relative Speed]{Relative Speed}
+
+We plot the time to convergence, relative to LN_BOBYQA and on a logarithmic scale, for each algorithm.
+
+
+\setkeys{Gin}{width=.99\textwidth}
+<<fig=TRUE>>=
+res$cvg<-rep("yes",nrow(res))
+res$cvg[which(res$excess>.02)] <- "no"
+res$cvg<-as.factor(res$cvg)
+k<-ggplot(res, aes(x=log(reltime), y=opt))
+k + geom_point(aes(color=cvg))+scale_x_log10()
+@
+
+
+Many of the cases where LN_BOBYQA is slower than other algorithms are simple problems that converge in less than 1/5 of a second for most algorithms.
+
+We will declare a data set to be non-simple if at least one of the models fit to the data took more than 0.2 seconds to convergence with LN_BOBYQA.
+
+<<results=tex>>=
+print(xtable(subset(res, opt=="LN_BOBYQA" & time >= 0.2)[c("dsname","time","n","np","models")]),floating=FALSE, table.placement="H")
+@
+
+
+
+\subsection[Reliablility]{Reliability}
+
+ Sed iaculis sodales elit quis vehicula. In et tristique neque, sodales aliquet metus. In posuere dictum nisl, quis laoreet augue congue a. Aenean in commodo neque, sit amet hendrerit ex. Aliquam id faucibus ante. Vivamus in fermentum nunc. Nam condimentum eros id orci pretium, quis aliquam magna eleifend. 
+
+\section[Conclusions]{Conclusions}
+
+\section[References]{References}
+
+<<echo=FALSE,eval=FALSE>>=
+toBibtex(citation(package="lme4"))
+toBibtex(citation(package="jsonlite"))
+toBibtex(citation(package="optimx"))
+toBibtex(citation(package="minqa"))
+toBibtex(citation(package="nloptr"))
+@
+
+
+Douglas Bates, Katharine M. Mullen, John C. Nash and Ravi Varadhan (2014). minqa:
+  Derivative-free optimization algorithms by quadratic approximation. R package version 1.2.4.
+  http://CRAN.R-project.org/package=minqa
+
+Bates D, Maechler M, Bolker B and Walker S (2014). \_lme4: Linear mixed-effects models using Eigen
+  and S4_. R package version 1.1-7, <URL: http://CRAN.R-project.org/package=lme4>.
+
+John C. Nash, Ravi Varadhan (2011). Unifying Optimization Algorithms to Aid Software System
+  Users: optimx for R. Journal of Statistical Software, 43(9), 1-14. URL
+  http://www.jstatsoft.org/v43/i09/.
+
+Jeroen Ooms (2014). The jsonlite Package: A Practical and Consistent Mapping Between JSON Data
+  and R Objects. arXiv:1403.2805 [stat.CO] URL http://arxiv.org/abs/1403.2805.
+
+Steven G. Johnson, The NLopt nonlinear-optimization package, http://ab-initio.mit.edu/nlopt
+  
+(For the nloptr package they want us to go through and cite each algorithm we used)  
+  
+\end{document}

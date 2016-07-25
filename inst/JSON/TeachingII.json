@@ -1,0 +1,127 @@
+{
+  "BLAS": "openblas",
+  "CPU": "Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz",
+  "models": [
+    {
+      "formula": "Y ~ 1 + A + T + U + V + W + X + Z + (1 | G)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0180000000000007,
+          "feval": 15,
+          "func": "lmer",
+          "dev": 567.162761189052
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.0210000000000008,
+          "feval": 36,
+          "func": "lmer",
+          "dev": 567.162761189215
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.0210000000000008,
+          "feval": 19,
+          "func": "lmer",
+          "dev": 567.162761189059
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0210000000000008,
+          "feval": 22,
+          "func": "lmer",
+          "dev": 567.162761189523
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0210000000000008,
+          "feval": 26,
+          "func": "lmer",
+          "dev": 567.162761189523
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.0229999999999961,
+          "feval": 41,
+          "func": "lmer",
+          "dev": 567.162761189523
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.103000000000009,
+          "feval": 14,
+          "func": "lmer",
+          "dev": 567.162761189056
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.102999999999994,
+          "feval": 17,
+          "func": "lmer",
+          "dev": 567.162761189052
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.192000000000007,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 567.162761189052
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.103000000000009,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 567.162761189052
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.000896823,
+
+          "feval": 16,
+          "func": "lmm",
+          "dev": 567.1627611890535
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.001034844,
+
+          "feval": 24,
+          "func": "lmm",
+          "dev": 567.1627611898934
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.000957629,
+
+          "feval": 30,
+          "func": "lmm",
+          "dev": 567.162761198294
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.00115786,
+
+          "feval": 50,
+          "func": "lmm",
+          "dev": 567.1627611890948
+        }
+      ],
+      "q": [
+        12
+      ],
+      "nopt": 1,
+      "p": 12,
+      "mtype": "PLSOne"
+    }
+  ],
+  "memory": "15.561 GB",
+  "CPU_CORES": 4,
+  "WORD_SIZE": 64,
+  "Julia": "0.4.2",
+  "Rversion": "R version 3.2.1 (2015-06-18)",
+  "dsname": "TeachingII",
+  "OS": "Linux",
+  "n": 96
+}

@@ -1,0 +1,127 @@
+{
+  "n": 225866,
+  "OS": "Linux",
+  "BLAS": "mkl",
+  "CPU": "Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz",
+  "WORD_SIZE": 64,
+  "CPU_CORES": 4,
+  "models": [
+    {
+      "formula": "Y ~ 1 + A + U + V + W + X + Z + T + (1 | G) + ((0 + V + W + X) | G) + ((1 + A + Z) | H) + (1 | I)",
+      "fits": [
+        {
+          "optimizer": "bobyqa",
+          "time": 18.7250000000001,
+          "feval": 347,
+          "func": "lmer",
+          "dev": 395168.836513732
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 54.5410000000002,
+          "feval": 1368,
+          "func": "lmer",
+          "dev": 395350.468577066
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 16.8810000000001,
+          "feval": 369,
+          "func": "lmer",
+          "dev": 395168.83657587
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 79.8810000000001,
+          "feval": 2040,
+          "func": "lmer",
+          "dev": 395168.845118185
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 49.5250000000001,
+          "feval": 1202,
+          "func": "lmer",
+          "dev": 395168.836514402
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 21.4859999999999,
+          "feval": 486,
+          "func": "lmer",
+          "dev": 395168.836513861
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 34.6320000000001,
+          "feval": 100,
+          "func": "lmer",
+          "dev": 395168.836675077
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 44.617,
+          "feval": 865,
+          "func": "lmer",
+          "dev": 395168.836514629
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 45.796,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 395168.836513748
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 25.2819999999999,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 395168.836513732
+        },
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 1.750388485,
+          "geval": 0,
+          "feval": 363,
+          "func": "lmm",
+          "dev": 395168.83652869635
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 3.984743216,
+          "geval": 0,
+          "feval": 1688,
+          "func": "lmm",
+          "dev": 395168.83651400724
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 3.082371285,
+          "geval": 0,
+          "feval": 1214,
+          "func": "lmm",
+          "dev": 395168.83651403827
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 1.485467068,
+          "geval": 0,
+          "feval": 486,
+          "func": "lmm",
+          "dev": 395168.83651386097
+        }
+      ],
+      "q": [
+        120,
+        74
+      ],
+      "nopt": 6,
+      "p": 4,
+      "mtype": "MixedModels.PLSTwo"
+    }
+  ],
+  "Julia": "0.4.0-dev+5181",
+  "memory": "5.745 GB",
+  "dsname": "dialectNL"
+}

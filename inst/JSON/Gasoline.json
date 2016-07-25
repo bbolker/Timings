@@ -1,0 +1,126 @@
+{
+  "BLAS": "openblas",
+  "CPU": "Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz",
+  "models": [
+    {
+      "formula": "Y ~ 1 + U + (1 | G)",
+      "fits": [
+        {
+          "optimizer": "LN_BOBYQA",
+          "time": 0.0006537,
+
+          "feval": 21,
+          "func": "lmm",
+          "dev": 170.662519564419
+        },
+        {
+          "optimizer": "LN_COBYLA",
+          "time": 0.000704967,
+
+          "feval": 26,
+          "func": "lmm",
+          "dev": 170.6625195663753
+        },
+        {
+          "optimizer": "LN_NELDERMEAD",
+          "time": 0.000591378,
+
+          "feval": 28,
+          "func": "lmm",
+          "dev": 170.6625196619112
+        },
+        {
+          "optimizer": "LN_SBPLX",
+          "time": 0.000716495,
+
+          "feval": 49,
+          "func": "lmm",
+          "dev": 170.6625195694289
+        },
+        {
+          "optimizer": "optimx:L-BFGS-B",
+          "time": 0.10299999999998,
+          "feval": 20,
+          "func": "lmer",
+          "dev": 170.662519564425
+        },
+        {
+          "optimizer": "optimx:nlminb",
+          "time": 0.102000000000004,
+          "feval": 21,
+          "func": "lmer",
+          "dev": 170.662519564425
+        },
+        {
+          "optimizer": "optimx:spg",
+          "time": 0.197000000000003,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 170.662519564425
+        },
+        {
+          "optimizer": "optimx:bobyqa",
+          "time": 0.103000000000009,
+          "feval": "NA",
+          "func": "lmer",
+          "dev": 170.662519564425
+        },
+        {
+          "optimizer": "NLOPT_LN_BOBYQA",
+          "time": 0.0190000000000055,
+          "feval": 26,
+          "func": "lmer",
+          "dev": 170.66251956444
+        },
+        {
+          "optimizer": "NLOPT_LN_COBYLA",
+          "time": 0.0200000000000102,
+          "feval": 28,
+          "func": "lmer",
+          "dev": 170.662519564911
+        },
+        {
+          "optimizer": "NLOPT_LN_NELDERMEAD",
+          "time": 0.0190000000000055,
+          "feval": 28,
+          "func": "lmer",
+          "dev": 170.662519682548
+        },
+        {
+          "optimizer": "NLOPT_LN_SBPLX",
+          "time": 0.0209999999999866,
+          "feval": 39,
+          "func": "lmer",
+          "dev": 170.662519654155
+        },
+        {
+          "optimizer": "bobyqa",
+          "time": 0.0160000000000196,
+          "feval": 29,
+          "func": "lmer",
+          "dev": 170.662519564425
+        },
+        {
+          "optimizer": "Nelder_Mead",
+          "time": 0.0200000000000102,
+          "feval": 54,
+          "func": "lmer",
+          "dev": 170.662519564425
+        }
+      ],
+      "q": [
+        10
+      ],
+      "nopt": 1,
+      "p": 2
+    }
+  ],
+  "memory": "15.561 GB",
+  "CPU_CORES": 4,
+  "WORD_SIZE": 64,
+  "Julia": "0.4.2",
+  "Rversion": "R version 3.2.0 (2015-04-16)",
+  "dsname": "Gasoline",
+  "OS": "Linux",
+  "n": 32
+}

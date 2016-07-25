@@ -1,42 +1,74 @@
-using DataFrames,JSON,MixedModels,RCall
+using Compat, DataFrames, DataStructures, JSON, MixedModels, RCall
 
-function retime(fnm,ofile)
+R" suppressPackageStartupMessages(library(Timings)) "
+
+const OS = string(VERSION ≤ v"0.4.6" ? Sys.OS_NAME : Sys.KERNEL)
+const desc = OrderedDict(
+    :Jvers => string(VERSION, " (", Base.GIT_VERSION_INFO.date_string, ")"),
+    :Rvers => rcopy(reval(:version)[Symbol("version.string")]),
+    :CPU => Sys.cpu_info()[1].model,
+    :OS => OS,
+    :CPU_CORES => length(Sys.cpu_info()),
+    :WORD_SIZE => Sys.WORD_SIZE,
+#    :BLAS => BLAS.vendor(),
+    :BLAS => Base.libblas_name,
+    :memory => string(@sprintf("%.3f ",Sys.total_memory()/2^30),"GB"))
+
+function retime(fnm)
     js = JSON.parsefile(fnm)
-    dsname = js["dsname"]
-    @show dsname
-    dat = DataFrame(string("Timings::",dsname))
-    js["n"] = size(dat,1)
-    js["CPU"] = Sys.cpu_info()[1].model
-    js["CPU_CORES"] = CPU_CORES
-    js["OS"] = Sys.OS_NAME
-    js["Julia"] = string(VERSION)
-    js["WORD_SIZE"] = Sys.WORD_SIZE
-    js["BLAS"] = Base.blas_vendor()
-    js["memory"] = string(@sprintf("%.3f ",Sys.total_memory()/2^30),"GB")
-    for m in js["models"]
-        form = eval(parse(m["formula"]))
-        @show form
-        mod = lmm(form,dat)
-        m["nopt"] = length(MixedModels.θ(mod))
-        m["mtype"] = typeof(mod.s)
-        for f in m["fits"]
-            print(f["function"],": ",f["optimizer"])
-            if f["function"] == "lmm"
+    for (ds, dict) in JSON.parsefile(fnm, dicttype = OrderedDict)
+        dat = rcopy(Symbol(ds))
+        dd = OrderedDict{Compat.String, Any}("n" => size(dat, 1))
+        for (form, optimizers) in dict
+            fform = eval(parse(form))
+            model = fit!(lmm(fform, dat))
+            fits = OrderedDict(:nopt => length(model[:θ]),
+                :p => length(fixef(model)),
+                :q => map(length, ranef(model, true))
+                )
+            for joptimizer in filter(r"^LN_", optimizers)  # optimize with lmm in Julia
                 gc()
-                f["time"] = @elapsed mod = fit(lmm(form,dat),false,symbol(f["optimizer"]))
-                f["deviance"] = mod.opt.fmin
-                print(" ",mod.opt.fmin,", ",f["time"])
-                f["feval"] = mod.opt.feval
-                f["geval"] = mod.opt.geval
-                m["p"] = size(mod.X,2)
-                m["q"] = Int[length(b) for b in mod.b]
+                optsym = Symbol(joptimizer)
+                tm = @elapsed model = fit!(lmm(fform, dat), false, optsym)
+                fits[optsym] = Float64[objective(model), tm, model.opt.feval]
             end
-            println()
+            R"form <- eval(parse(text = $form))"
+            R"ds <- eval(as.symbol($ds))"
+            if "bobyqa" ∈ optimizers
+                fits[:bobyqa] = rcopy(R"""
+                    tt <- system.time(mm <- lmer(form, ds, REML = FALSE,
+                        control = lmerControl(optimizer = "bobyqa", calc.derivs = FALSE,
+                            optCtrl = list(maxfun = 100000))))
+                    c(deviance(mm), round(tt[3], 3), mm@optinfo$feval)
+                """)
+            end
+            if "Nelder_Mead" ∈ optimizers
+                fits[:Nelder_Mead] = rcopy(R"""
+                    tt <- system.time(mm <- lmer(form, ds, REML = FALSE,
+                        control = lmerControl(optimizer = "Nelder_Mead", calc.derivs = FALSE,
+                            optCtrl = list(maxfun = 100000))))
+                    c(deviance(mm), round(tt[3], 3), mm@optinfo$feval)
+                """)
+            end
+            for nloptalg in filter(r"^NLOPT_LN_", optimizers)
+                fits[Symbol(nloptalg)] = rcopy(R"""
+                    tt <- system.time(mm <- lmer(form, ds, REML = FALSE,
+                        control = lmerControl(optimizer = "nloptwrap", calc.derivs = FALSE,
+                            optCtrl = list(algorithm = $nloptalg, maxeval = 100000))))
+                    c(deviance(mm), round(tt[3], 3), mm@optinfo$feval)
+                """)
+            end
+            for optimxalg in filter(r"^optimx:", optimizers)
+                RCall.globalEnv[:method] = RCall.sexp(convert(ASCIIString, split(optimxalg, ':')[2]))
+                fits[Symbol(optimxalg)] = rcopy(R"""
+                    tt <- system.time(mm <- lmer(form, ds, REML = FALSE,
+                        control = lmerControl(optimizer = "optimx", calc.derivs = FALSE,
+                            optCtrl = list(method = method, maxit = 100000))))
+                    c(deviance(mm), round(tt[3], 3), mm@optinfo$feval)
+                """)
+            end
+            dd[form] = fits
         end
-    end
-    open(ofile,"w") do io
-        write(io,json(js,2))
+        desc[Symbol(ds)] = dd
     end
 end
-
-retime(fnm) = retime(fnm,fnm)
